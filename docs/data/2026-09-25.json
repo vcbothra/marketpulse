@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-25T22:36+05:30",
+ "generated": "2026-09-25T22:59+05:30",
  "sections": [
   {
    "title": "Bullion & Crude",
@@ -21,6 +21,7 @@
        "prev": 152016.0,
        "source": "IBJA · ibjarates.com",
        "rank": 0,
+       "note": null,
        "href": "https://ibjarates.com/",
        "asof": "2026-09-24"
       },
@@ -36,6 +37,7 @@
        "prev": 232766.0,
        "source": "IBJA · ibjarates.com",
        "rank": 0,
+       "note": null,
        "href": "https://ibjarates.com/",
        "asof": "2026-09-24"
       },
@@ -51,6 +53,7 @@
        "prev": 4284.45,
        "source": "LBMA",
        "rank": 0,
+       "note": null,
        "href": "https://www.lbma.org.uk/prices-and-data/precious-metal-prices",
        "asof": "2026-09-24"
       },
@@ -66,6 +69,7 @@
        "prev": 65.185,
        "source": "LBMA",
        "rank": 0,
+       "note": null,
        "href": "https://www.lbma.org.uk/prices-and-data/precious-metal-prices",
        "asof": "2026-09-24"
       },
@@ -81,6 +85,7 @@
        "prev": 65.72754468052466,
        "source": "Derived · LBMA fixes",
        "rank": 0,
+       "note": null,
        "href": "https://www.lbma.org.uk/prices-and-data/precious-metal-prices",
        "asof": "2026-09-24"
       },
@@ -92,11 +97,12 @@
        "dp": 2,
        "cls": "",
        "loc": "en-US",
-       "price": 96.93,
-       "prev": 106.5999984741211,
-       "source": "Yahoo Finance",
-       "rank": 0,
-       "href": "https://finance.yahoo.com/quote/BZ%3DF",
+       "price": 104.06,
+       "prev": 106.6,
+       "source": "CNBC",
+       "rank": 1,
+       "note": "Yahoo Finance disagreed",
+       "href": "https://www.cnbc.com/quotes/%40LCO.1",
        "asof": "2026-09-25"
       }
      ]
@@ -123,6 +129,7 @@
        "prev": 95.74120330810547,
        "source": "Yahoo Finance",
        "rank": 0,
+       "note": null,
        "href": "https://finance.yahoo.com/quote/INR%3DX",
        "asof": "2026-09-25"
       },
@@ -134,10 +141,11 @@
        "dp": 2,
        "cls": "",
        "loc": "en-US",
-       "price": 101.02,
+       "price": 101.054,
        "prev": 101.29000091552734,
        "source": "Yahoo Finance",
        "rank": 0,
+       "note": null,
        "href": "https://finance.yahoo.com/quote/DX-Y.NYB",
        "asof": "2026-09-25"
       }
@@ -165,6 +173,7 @@
        "prev": 14735.0,
        "source": "LME via Westmetall",
        "rank": 0,
+       "note": null,
        "href": "https://www.westmetall.com/en/markdaten.php?action=table&field=LME_Cu_cash",
        "asof": "2026-09-24"
       },
@@ -180,6 +189,7 @@
        "prev": 3949.0,
        "source": "LME via Westmetall",
        "rank": 0,
+       "note": null,
        "href": "https://www.westmetall.com/en/markdaten.php?action=table&field=LME_Zn_cash",
        "asof": "2026-09-24"
       }
@@ -203,10 +213,11 @@
        "dp": 0,
        "cls": "",
        "loc": "en-US",
-       "price": 83895.0,
-       "prev": 84390.86528328768,
+       "price": 83822.0,
+       "prev": 84247.77021663613,
        "source": "CoinGecko",
        "rank": 0,
+       "note": null,
        "href": "https://www.coingecko.com/en/coins/bitcoin",
        "asof": "2026-09-25"
       },
@@ -218,10 +229,11 @@
        "dp": 0,
        "cls": "",
        "loc": "en-US",
-       "price": 2689.58,
-       "prev": 2682.753210308494,
+       "price": 2686.14,
+       "prev": 2679.0387826016326,
        "source": "CoinGecko",
        "rank": 0,
+       "note": null,
        "href": "https://www.coingecko.com/en/coins/ethereum",
        "asof": "2026-09-25"
       }
@@ -249,6 +261,7 @@
        "prev": 23063.099609375,
        "source": "Yahoo Finance",
        "rank": 0,
+       "note": null,
        "href": "https://finance.yahoo.com/quote/%5ENSEI",
        "asof": "2026-09-25"
       },
@@ -264,6 +277,7 @@
        "prev": 73580.5390625,
        "source": "Yahoo Finance",
        "rank": 0,
+       "note": null,
        "href": "https://finance.yahoo.com/quote/%5EBSESN",
        "asof": "2026-09-25"
       }
@@ -287,10 +301,11 @@
        "dp": 2,
        "cls": "",
        "loc": "en-US",
-       "price": 7740.29,
+       "price": 7742.29,
        "prev": 7704.1298828125,
        "source": "Yahoo Finance",
        "rank": 0,
+       "note": null,
        "href": "https://finance.yahoo.com/quote/%5EGSPC",
        "asof": "2026-09-25"
       },
@@ -302,10 +317,11 @@
        "dp": 2,
        "cls": "",
        "loc": "en-US",
-       "price": 27084.78,
+       "price": 27089.488,
        "prev": 26939.369140625,
        "source": "Yahoo Finance",
        "rank": 0,
+       "note": null,
        "href": "https://finance.yahoo.com/quote/%5EIXIC",
        "asof": "2026-09-25"
       }
@@ -324,9 +340,10 @@
        "cls": "",
        "loc": "en-US",
        "price": 66364.2,
-       "prev": 65018.94921875,
+       "prev": 65513.98828125,
        "source": "Yahoo Finance",
        "rank": 0,
+       "note": null,
        "href": "https://finance.yahoo.com/quote/%5EN225",
        "asof": "2026-09-25"
       },
@@ -339,9 +356,10 @@
        "cls": "",
        "loc": "en-US",
        "price": 24510.09,
-       "prev": 24834.119140625,
+       "prev": 24761.130859375,
        "source": "Yahoo Finance",
        "rank": 0,
+       "note": null,
        "href": "https://finance.yahoo.com/quote/%5EHSI",
        "asof": "2026-09-25"
       },
@@ -357,23 +375,18 @@
        "prev": 7017.91015625,
        "source": "Yahoo Finance",
        "rank": 0,
+       "note": null,
        "href": "https://finance.yahoo.com/quote/%5EKS11",
        "asof": "2026-09-23"
       },
       {
        "id": "csi300",
        "name": "CSI 300",
-       "unit": "China · 24 Sep",
+       "unit": "China",
        "cur": "",
        "dp": 2,
        "cls": "",
-       "loc": "en-US",
-       "price": 4439.1445,
-       "prev": 4439.14453125,
-       "source": "Yahoo Finance",
-       "rank": 0,
-       "href": "https://finance.yahoo.com/quote/000300.SS",
-       "asof": "2026-09-24"
+       "loc": "en-US"
       }
      ]
     }
