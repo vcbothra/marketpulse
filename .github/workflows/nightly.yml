@@ -1,0 +1,47 @@
+name: Nightly snapshot
+
+on:
+  schedule:
+    # 21:37 UTC = 03:07 IST. GitHub may start scheduled runs a little late.
+    - cron: "37 21 * * *"
+  workflow_dispatch: # adds a "Run workflow" button for manual runs
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nightly-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build snapshot
+        id: build
+        run: python generate.py
+
+      # Save whatever was produced, even if too many sources failed
+      - name: Commit and push
+        if: always()
+        run: |
+          git config user.name "market-pulse-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit"
+          else
+            git commit -m "Snapshot $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M') IST"
+            git push
+          fi
