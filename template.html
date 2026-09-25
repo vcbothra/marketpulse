@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Market Pulse</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-2: #1c232c;
+    --border: #262e38;
+    --text: #e6edf3;
+    --muted: #8b96a3;
+    --faint: #5b6673;
+    --up: #2ecc71;
+    --up-bg: rgba(46, 204, 113, .12);
+    --down: #ff5c5c;
+    --down-bg: rgba(255, 92, 92, .12);
+    --flat-bg: rgba(139, 150, 163, .12);
+    --accent: #d4a73a;
+    --accent-2: #a9b4c2;
+    --live: #2ecc71;
+    --delayed: #e5a93b;
+    --stale: #6b7480;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f4f5f7;
+      --surface: #ffffff;
+      --surface-2: #eef0f3;
+      --border: #e3e6ea;
+      --text: #14181d;
+      --muted: #5d6773;
+      --faint: #8a939d;
+      --up: #13894a;
+      --up-bg: rgba(19, 137, 74, .10);
+      --down: #d23939;
+      --down-bg: rgba(210, 57, 57, .10);
+      --flat-bg: rgba(93, 103, 115, .10);
+      --accent: #a67c14;
+      --accent-2: #6f7a88;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.35;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 5;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .bar {
+    max-width: 1080px; margin: 0 auto;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand { flex: 1; min-width: 0; }
+  .brand h1 { font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
+  .brand .meta { font-size: 12px; color: var(--muted); margin-top: 2px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .pill {
+    font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 999px;
+    background: var(--flat-bg); color: var(--muted);
+  }
+  .pill.ok { background: var(--up-bg); color: var(--up); }
+  .pill.warn { background: rgba(229, 169, 59, .14); color: var(--delayed); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface); color: var(--text);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 12px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .btn:disabled { opacity: .6; cursor: default; }
+  .btn svg { width: 15px; height: 15px; }
+  .btn.busy svg { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .auto {
+    font: inherit; font-size: 12px; color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+    background: none; border: 0; cursor: pointer; padding: 4px 0;
+  }
+  .toggle { width: 30px; height: 18px; border-radius: 999px; background: var(--stale); position: relative; transition: background .15s; }
+  .toggle::after { content: ""; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: left .15s; }
+  .auto[aria-pressed="true"] .toggle { background: var(--up); }
+  .auto[aria-pressed="true"] .toggle::after { left: 14px; }
+
+  /* ---------- Layout ---------- */
+  main { max-width: 1080px; margin: 0 auto; padding: 8px 16px 32px; }
+  section { margin-top: 20px; }
+  .sec-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .sec-head h2 {
+    font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sec-head h2 .rank {
+    display: inline-grid; place-items: center;
+    width: 18px; height: 18px; border-radius: 5px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    font-size: 10px; color: var(--faint);
+  }
+  .sec-head .src { font-size: 11px; color: var(--faint); text-align: right; display: inline-flex; align-items: center; gap: 6px; }
+  .sec-head .src .dot { margin: 0; }
+
+  .grid { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 720px) {
+    .grid.g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  .sub-head {
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; color: var(--text);
+    margin: 4px 2px 8px;
+  }
+  .grid + .sub-head { margin-top: 14px; }
+  .sub-status { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: var(--faint); }
+  .sub-status .dot { margin: 0; }
+
+  /* ---------- Tile ---------- */
+  .tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 12px 11px;
+    display: flex; flex-direction: column; gap: 6px;
+    min-width: 0;
+    color: inherit; text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  a.tile:active { transform: scale(.99); }
+  .tile .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; }
+  .tile .top > div { min-width: 0; }
+  .tile .name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tile .unit { font-size: 11px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; margin-top: 5px; background: var(--border); display: inline-block; }
+  .dot.live { background: var(--live); box-shadow: 0 0 0 3px color-mix(in srgb, var(--live) 20%, transparent); }
+  .dot.delayed { background: var(--delayed); }
+  .dot.stale { background: var(--stale); }
+
+  .price { font-size: 22px; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 30px; }
+  .chg { display: flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 600; flex-wrap: wrap; min-height: 20px; color: var(--muted); }
+  .chg .badge { padding: 2px 6px; border-radius: 6px; background: var(--flat-bg); }
+  .up { color: var(--up); }   .up .badge { background: var(--up-bg); }
+  .down { color: var(--down); } .down .badge { background: var(--down-bg); }
+  .tile.err .price { color: var(--faint); }
+  .tile.err .chg { color: var(--faint); font-weight: 500; }
+
+  .tile.hero { padding: 14px 14px 12px; }
+  .tile.hero .price { font-size: 26px; min-height: 34px; }
+  .tile.gold { border-top: 3px solid var(--accent); }
+  .tile.silver { border-top: 3px solid var(--accent-2); }
+
+  /* loading skeleton */
+  .skel {
+    display: inline-block; height: .8em; width: 70%; border-radius: 6px;
+    background: linear-gradient(90deg, var(--surface-2) 0%, var(--border) 50%, var(--surface-2) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s ease-in-out infinite;
+    vertical-align: middle;
+  }
+  .chg .skel { width: 45%; height: 12px; }
+  @keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+  /* legend */
+  .legend {
+    margin-top: 28px; padding: 12px 14px;
+    border: 1px dashed var(--border); border-radius: 12px;
+    font-size: 11.5px; color: var(--muted);
+    display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .dot { margin: 0; }
+  .note { margin-top: 10px; font-size: 11px; color: var(--faint); line-height: 1.5; }
+  .note a { color: inherit; }
+
+  @media (max-width: 380px) {
+    .auto span:first-child { display: none; }
+    .price { font-size: 20px; }
+    .tile.hero .price { font-size: 23px; }
+  }
+  /* snapshot additions */
+  header { position: static; }
+  .nav { max-width: 1080px; margin: 0 auto; padding: 0 16px 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .nav a, .nav span {
+    font-size: 12.5px; font-weight: 600; text-decoration: none; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px;
+  }
+  .nav span { color: var(--faint); }
+  .nav .spacer { flex: 1; background: none; border: 0; padding: 0; }
+  .dot.primary { background: var(--live); }
+  .dot.backup { background: var(--delayed); }
+  table.src-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+  .src-table th, .src-table td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .src-table th { color: var(--faint); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+  .src-table td { color: var(--muted); }
+  .src-table td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
+  .src-table .dot { margin: 0 6px 0 0; vertical-align: middle; }
+  details.sources { margin-top: 18px; }
+  details.sources summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="brand">
+      <h1>Market Pulse</h1>
+      <div class="meta">
+        <span class="num" id="stamp"></span>
+        <span class="pill" id="status"></span>
+      </div>
+    </div>
+  </div>
+  <nav class="nav" id="nav"></nav>
+</header>
+
+<main id="main"></main>
+
+<script>
+const DATA = /*__DATA__*/null;
+
+const MON3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmtN = (v, dp, loc) => v.toLocaleString(loc || 'en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+const isNum = v => typeof v === 'number' && isFinite(v);
+
+function header() {
+  // generated is ISO with +05:30 offset; show it as IST wall-clock
+  const m = DATA.generated.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+  const d = new Date(+m[1], +m[2] - 1, +m[3]);
+  const wd = d.toLocaleDateString('en-GB', { weekday: 'short' });
+  document.getElementById('stamp').textContent = `Snapshot · ${wd}, ${+m[3]} ${MON3[+m[2] - 1]} ${m[1]} · ${m[4]}:${m[5]} IST`;
+
+  const all = DATA.sections.flatMap(s => s.groups.flatMap(g => g.tiles));
+  const ok = all.filter(t => isNum(t.price)).length;
+  const backups = all.filter(t => isNum(t.price) && t.rank > 0).length;
+  const pill = document.getElementById('status');
+  pill.className = 'pill ' + (ok === all.length ? 'ok' : 'warn');
+  pill.textContent = ok === all.length ? (backups ? `All loaded · ${backups} via backup` : 'All loaded') : `${ok} of ${all.length} loaded`;
+
+  const n = DATA.nav || {};
+  const link = (href, label) => href ? `<a href="${esc(href)}">${label}</a>` : `<span>${label}</span>`;
+  document.getElementById('nav').innerHTML =
+    link(n.prev, '‹ Prev night') + link(n.next, 'Next ›') + '<i class="spacer"></i>' +
+    (n.latest ? link(n.latest, 'Latest') : '') + link(n.archive, 'Archive') + link(n.live, 'Live');
+}
+
+function tileHTML(t) {
+  const has = isNum(t.price);
+  let price = '—', chg = `<div class="chg num">Couldn't load</div>`, dot = '<span class="dot"></span>';
+  if (has) {
+    price = t.cur + fmtN(t.price, t.dp, t.loc);
+    dot = `<span class="dot ${t.rank > 0 ? 'backup' : 'primary'}" title="${esc(t.source)}"></span>`;
+    if (isNum(t.prev) && t.prev !== 0) {
+      const d = t.price - t.prev, pct = d / t.prev * 100;
+      const cdp = Math.abs(d) < 1 && t.dp < 2 ? 2 : t.dp;
+      const r = Number(Math.abs(d).toFixed(cdp));
+      const dir = r === 0 ? '' : d > 0 ? 'up' : 'down';
+      const sign = dir === 'up' ? '+' : dir === 'down' ? '−' : '';
+      chg = `<div class="chg num ${dir}"><span>${sign}${fmtN(Math.abs(d), cdp, t.loc)}</span><span class="badge">${sign}${Math.abs(pct).toFixed(2)}%</span></div>`;
+    } else {
+      chg = `<div class="chg num"></div>`;
+    }
+  }
+  const tag = has && t.href ? 'a' : 'div';
+  const href = has && t.href ? ` href="${esc(t.href)}" target="_blank" rel="noopener"` : '';
+  return `<${tag} class="tile ${esc(t.cls)}${has ? '' : ' err'}"${href}>
+    <div class="top"><div><div class="name">${esc(t.name)}</div><div class="unit">${esc(t.unit)}</div></div>${dot}</div>
+    <div class="price num">${price}</div>${chg}</${tag}>`;
+}
+
+function body() {
+  let h = '', rows = '';
+  DATA.sections.forEach((sec, si) => {
+    h += `<section><div class="sec-head"><h2><span class="rank">${si + 1}</span>${esc(sec.title)}</h2><div class="src">${esc(sec.src)}</div></div>`;
+    sec.groups.forEach(g => {
+      if (g.label) h += `<div class="sub-head"><span>${esc(g.label)}</span></div>`;
+      h += `<div class="grid ${esc(g.cls)}">` + g.tiles.map(tileHTML).join('') + `</div>`;
+      g.tiles.forEach(t => {
+        const has = isNum(t.price);
+        rows += `<tr><td>${esc(t.name)}</td><td><i class="dot ${has ? (t.rank > 0 ? 'backup' : 'primary') : ''}"></i>${has ? esc(t.source) : 'All sources failed'}</td><td class="num" style="white-space:nowrap">${t.asof ? (+t.asof.slice(8)) + ' ' + MON3[+t.asof.slice(5, 7) - 1] : ''}</td></tr>`;
+      });
+    });
+    h += `</section>`;
+  });
+  h += `<div class="legend">
+      <span><i class="dot primary"></i>Primary source</span>
+      <span><i class="dot backup"></i>Backup source used</span>
+      <span><i class="dot"></i>Unavailable</span>
+    </div>
+    <details class="sources"><summary>Where each number came from</summary>
+      <table class="src-table"><thead><tr><th>Item</th><th>Source</th><th>As of</th></tr></thead><tbody>${rows}</tbody></table>
+    </details>
+    <p class="note">Change is versus the previous close (IBJA: previous day's same session; crypto: 24 h).
+    Snapshot taken nightly around 3 AM IST; tap any tile to open its source.</p>`;
+  document.getElementById('main').innerHTML = h;
+}
+
+header();
+body();
+</script>
+</body>
+</html>

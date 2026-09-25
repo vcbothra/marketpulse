@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Market Pulse</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-2: #1c232c;
+    --border: #262e38;
+    --text: #e6edf3;
+    --muted: #8b96a3;
+    --faint: #5b6673;
+    --up: #2ecc71;
+    --up-bg: rgba(46, 204, 113, .12);
+    --down: #ff5c5c;
+    --down-bg: rgba(255, 92, 92, .12);
+    --flat-bg: rgba(139, 150, 163, .12);
+    --accent: #d4a73a;
+    --accent-2: #a9b4c2;
+    --live: #2ecc71;
+    --delayed: #e5a93b;
+    --stale: #6b7480;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f4f5f7;
+      --surface: #ffffff;
+      --surface-2: #eef0f3;
+      --border: #e3e6ea;
+      --text: #14181d;
+      --muted: #5d6773;
+      --faint: #8a939d;
+      --up: #13894a;
+      --up-bg: rgba(19, 137, 74, .10);
+      --down: #d23939;
+      --down-bg: rgba(210, 57, 57, .10);
+      --flat-bg: rgba(93, 103, 115, .10);
+      --accent: #a67c14;
+      --accent-2: #6f7a88;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.35;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 5;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .bar {
+    max-width: 1080px; margin: 0 auto;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand { flex: 1; min-width: 0; }
+  .brand h1 { font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
+  .brand .meta { font-size: 12px; color: var(--muted); margin-top: 2px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .pill {
+    font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 999px;
+    background: var(--flat-bg); color: var(--muted);
+  }
+  .pill.ok { background: var(--up-bg); color: var(--up); }
+  .pill.warn { background: rgba(229, 169, 59, .14); color: var(--delayed); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface); color: var(--text);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 12px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .btn:disabled { opacity: .6; cursor: default; }
+  .btn svg { width: 15px; height: 15px; }
+  .btn.busy svg { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .auto {
+    font: inherit; font-size: 12px; color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+    background: none; border: 0; cursor: pointer; padding: 4px 0;
+  }
+  .toggle { width: 30px; height: 18px; border-radius: 999px; background: var(--stale); position: relative; transition: background .15s; }
+  .toggle::after { content: ""; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: left .15s; }
+  .auto[aria-pressed="true"] .toggle { background: var(--up); }
+  .auto[aria-pressed="true"] .toggle::after { left: 14px; }
+
+  /* ---------- Layout ---------- */
+  main { max-width: 1080px; margin: 0 auto; padding: 8px 16px 32px; }
+  section { margin-top: 20px; }
+  .sec-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .sec-head h2 {
+    font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sec-head h2 .rank {
+    display: inline-grid; place-items: center;
+    width: 18px; height: 18px; border-radius: 5px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    font-size: 10px; color: var(--faint);
+  }
+  .sec-head .src { font-size: 11px; color: var(--faint); text-align: right; display: inline-flex; align-items: center; gap: 6px; }
+  .sec-head .src .dot { margin: 0; }
+
+  .grid { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 720px) {
+    .grid.g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  .sub-head {
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; color: var(--text);
+    margin: 4px 2px 8px;
+  }
+  .grid + .sub-head { margin-top: 14px; }
+  .sub-status { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: var(--faint); }
+  .sub-status .dot { margin: 0; }
+
+  /* ---------- Tile ---------- */
+  .tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 12px 11px;
+    display: flex; flex-direction: column; gap: 6px;
+    min-width: 0;
+    color: inherit; text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  a.tile:active { transform: scale(.99); }
+  .tile .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; }
+  .tile .top > div { min-width: 0; }
+  .tile .name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tile .unit { font-size: 11px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; margin-top: 5px; background: var(--border); display: inline-block; }
+  .dot.live { background: var(--live); box-shadow: 0 0 0 3px color-mix(in srgb, var(--live) 20%, transparent); }
+  .dot.delayed { background: var(--delayed); }
+  .dot.stale { background: var(--stale); }
+
+  .price { font-size: 22px; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 30px; }
+  .chg { display: flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 600; flex-wrap: wrap; min-height: 20px; color: var(--muted); }
+  .chg .badge { padding: 2px 6px; border-radius: 6px; background: var(--flat-bg); }
+  .up { color: var(--up); }   .up .badge { background: var(--up-bg); }
+  .down { color: var(--down); } .down .badge { background: var(--down-bg); }
+  .tile.err .price { color: var(--faint); }
+  .tile.err .chg { color: var(--faint); font-weight: 500; }
+
+  .tile.hero { padding: 14px 14px 12px; }
+  .tile.hero .price { font-size: 26px; min-height: 34px; }
+  .tile.gold { border-top: 3px solid var(--accent); }
+  .tile.silver { border-top: 3px solid var(--accent-2); }
+
+  /* loading skeleton */
+  .skel {
+    display: inline-block; height: .8em; width: 70%; border-radius: 6px;
+    background: linear-gradient(90deg, var(--surface-2) 0%, var(--border) 50%, var(--surface-2) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s ease-in-out infinite;
+    vertical-align: middle;
+  }
+  .chg .skel { width: 45%; height: 12px; }
+  @keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+  /* legend */
+  .legend {
+    margin-top: 28px; padding: 12px 14px;
+    border: 1px dashed var(--border); border-radius: 12px;
+    font-size: 11.5px; color: var(--muted);
+    display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .dot { margin: 0; }
+  .note { margin-top: 10px; font-size: 11px; color: var(--faint); line-height: 1.5; }
+  .note a { color: inherit; }
+
+  @media (max-width: 380px) {
+    .auto span:first-child { display: none; }
+    .price { font-size: 20px; }
+    .tile.hero .price { font-size: 23px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="brand">
+      <h1>Market Pulse</h1>
+      <div class="meta">
+        <span class="num" id="stamp">Loading…</span>
+        <span class="pill" id="status">Fetching</span>
+      </div>
+    </div>
+    <button class="auto" id="auto" aria-pressed="true" title="Refresh automatically every 5 minutes">
+      <span>Auto</span><span class="toggle"></span>
+    </button>
+    <button class="btn" id="refresh" aria-label="Refresh">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+      Refresh
+    </button>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<script>
+/* =====================================================================
+   Market Pulse — live dashboard (single self-contained file)
+   Sources
+     IBJA gold/silver ........ ibjarates.com (published AM/PM rates)
+     LBMA gold/silver ........ prices.lbma.org.uk (official fixes)
+     LME copper/zinc ......... westmetall.com (LME cash settlement)
+     FX, crude, indices ...... Yahoo Finance chart API (may be ~15 min delayed)
+     BTC / ETH ............... CoinGecko (fallback: Binance)
+   Most of these sites don't allow direct browser requests (CORS), so the
+   page routes them through free public CORS proxies, trying each in turn.
+   If you have your own proxy, add it to the top of PROXIES.
+   ===================================================================== */
+
+const PROXIES = [
+  { name: 'allorigins', wrap: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
+  { name: 'corsproxy',  wrap: u => 'https://corsproxy.io/?url=' + encodeURIComponent(u) },
+  { name: 'codetabs',   wrap: u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u) },
+];
+const TIMEOUT_MS = 12000;
+const PROXY_CONCURRENCY = 4;
+const AUTO_MS = 5 * 60 * 1000;
+
+/* ---------------- small utilities ---------------- */
+const $ = s => document.querySelector(s);
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+};
+const num = s => {
+  if (s == null) return NaN;
+  const t = String(s).replace(/[,\s₹$]/g, '');
+  return t === '' ? NaN : Number(t);
+};
+const isNum = v => typeof v === 'number' && isFinite(v);
+const MONTHS = { jan:0, feb:1, mar:2, apr:3, may:4, jun:5, jul:6, aug:7, sep:8, oct:9, nov:10, dec:11,
+  january:0, february:1, march:2, april:3, june:5, july:6, august:7, september:8, october:9, november:10, december:11 };
+const MON3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const shortDate = d => d.getDate() + ' ' + MON3[d.getMonth()];
+const ymd = d => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+function todayIST() {
+  const p = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+  const [y, m, d] = p.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+/* concurrency limiter for proxied requests (free proxies rate-limit) */
+let active = 0; const queue = [];
+function limited(fn) {
+  return new Promise((resolve, reject) => {
+    const run = () => { active++; fn().then(resolve, reject).finally(() => { active--; if (queue.length) queue.shift()(); }); };
+    active < PROXY_CONCURRENCY ? run() : queue.push(run);
+  });
+}
+
+async function fetchText(url) {
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), TIMEOUT_MS);
+  try {
+    const r = await fetch(url, { signal: ctl.signal, cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.text();
+  } finally { clearTimeout(t); }
+}
+
+let preferredProxy = Number(store.get('mp.proxy')) || 0;
+function proxyOrder() {
+  const idx = PROXIES.map((_, i) => i);
+  const p = preferredProxy < PROXIES.length ? preferredProxy : 0;
+  return [p, ...idx.filter(i => i !== p)];
+}
+
+/* Fetch a resource and parse it. Tries direct first (only if the source allows
+   browser requests), then each proxy. `parse` must return a value or throw. */
+async function acquire(urls, parse, { direct = false } = {}) {
+  const bust = u => u + (u.includes('?') ? '&' : '?') + '_=' + Date.now();
+  let lastErr;
+  for (const u of urls) {
+    if (direct) {
+      try { return parse(await fetchText(u)); } catch (e) { lastErr = e; }
+    }
+    for (const i of proxyOrder()) {
+      try {
+        const body = await limited(() => fetchText(PROXIES[i].wrap(bust(u))));
+        const out = parse(body);
+        if (preferredProxy !== i) { preferredProxy = i; store.set('mp.proxy', String(i)); }
+        return out;
+      } catch (e) { lastErr = e; }
+    }
+  }
+  throw lastErr || new Error('unavailable');
+}
+const parseJSON = t => { const j = JSON.parse(t); if (j == null) throw new Error('empty'); return j; };
+
+/* ---------------- source adapters ---------------- */
+
+/* Yahoo Finance chart API → { price, prev, open } */
+function yahoo(sym) {
+  const path = '/v8/finance/chart/' + encodeURIComponent(sym) + '?range=1d&interval=15m';
+  return acquire(['https://query1.finance.yahoo.com' + path, 'https://query2.finance.yahoo.com' + path], t => {
+    const m = parseJSON(t).chart.result[0].meta;
+    const price = m.regularMarketPrice;
+    const prev = isNum(m.previousClose) ? m.previousClose : m.chartPreviousClose;
+    if (!isNum(price) || !isNum(prev)) throw new Error('bad yahoo data');
+    const now = Date.now() / 1000;
+    const tp = m.currentTradingPeriod && m.currentTradingPeriod.regular;
+    const fresh = isNum(m.regularMarketTime) && now - m.regularMarketTime < 2 * 3600;
+    const open = !!(tp && now >= tp.start && now < tp.end && fresh);
+    return { price, prev, state: open ? 'live' : 'stale' };
+  });
+}
+
+/* LBMA official prices JSON (full history, oldest first). v = [USD, GBP, EUR] */
+function lbmaSeries(file) {
+  return acquire(['https://prices.lbma.org.uk/json/' + file + '.json'], t => {
+    const arr = parseJSON(t);
+    if (!Array.isArray(arr)) throw new Error('bad lbma data');
+    const rows = arr.filter(r => r && r.d && r.v && isNum(r.v[0])).map(r => ({ d: r.d, v: r.v[0] }));
+    if (rows.length < 2) throw new Error('bad lbma data');
+    rows.sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : 0);
+    return rows.slice(-30);
+  });
+}
+const isoToDate = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+
+/* Westmetall LME table page → [{date, v}] newest first */
+function lmeSeries(field) {
+  return acquire(['https://www.westmetall.com/en/markdaten.php?action=table&field=' + field], t => {
+    const doc = new DOMParser().parseFromString(t, 'text/html');
+    const out = [];
+    for (const tr of doc.querySelectorAll('tr')) {
+      const c = [...tr.querySelectorAll('td,th')].map(x => x.textContent.trim());
+      if (c.length < 2) continue;
+      const m = c[0].match(/^(\d{1,2})\.?\s+([A-Za-z]+)\.?\s+(\d{4})$/);
+      if (!m) continue;
+      const mon = MONTHS[m[2].toLowerCase()];
+      const v = num(c[1]);
+      if (mon == null || !isNum(v) || v <= 0) continue;
+      out.push({ date: new Date(+m[3], mon, +m[1]), v });
+    }
+    if (out.length < 2) throw new Error('bad lme data');
+    out.sort((a, b) => b.date - a.date);
+    return out;
+  });
+}
+
+/* IBJA rates page → { gold:[obs], silver:[obs] } where obs = {date, session, v}, newest last */
+function ibja() {
+  return acquire(['https://ibjarates.com/'], t => {
+    const doc = new DOMParser().parseFromString(t, 'text/html');
+    const obs = [];
+    const sessionOf = el => {
+      for (let n = el; n && n !== doc.body; n = n.parentElement) {
+        const tag = ((n.id || '') + ' ' + (typeof n.className === 'string' ? n.className : '')).toLowerCase();
+        if (/(^|[^a-z])pm([^a-z]|$)/.test(tag)) return 'PM';
+        if (/(^|[^a-z])am([^a-z]|$)/.test(tag)) return 'AM';
+      }
+      return null;
+    };
+    const seen = {};
+    for (const table of doc.querySelectorAll('table')) {
+      let gi = 1, si = 6;
+      for (const tr of table.querySelectorAll('tr')) {
+        const cells = [...tr.querySelectorAll('td,th')].map(x => x.textContent.replace(/\s+/g, ' ').trim());
+        // header row → locate columns
+        const sIdx = cells.findIndex(c => /silver/i.test(c));
+        if (sIdx > 0 && cells.some(c => /date/i.test(c))) {
+          si = sIdx;
+          const g = cells.findIndex(c => /^(gold\s*)?999$/i.test(c));
+          if (g > 0) gi = g;
+          continue;
+        }
+        const m = (cells[0] || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if (!m) continue;
+        const date = new Date(+m[3], +m[2] - 1, +m[1]);
+        const gold = num(cells[gi]), silver = num(cells[si]);
+        if (!(gold > 20000 && gold < 2000000)) continue;
+        const key = ymd(date);
+        let session = sessionOf(tr);
+        if (!session) { seen[key] = (seen[key] || 0) + 1; session = seen[key] === 1 ? 'AM' : 'PM'; }
+        obs.push({ date, session, gold, silver: (silver > 20000 && silver < 5000000) ? silver : NaN });
+      }
+    }
+    if (!obs.length) throw new Error('no ibja rows');
+
+    // Today's table (shown once IBJA uploads the day's rates): rows like "999 | AM | PM"
+    const today = todayIST();
+    const latestHist = obs.reduce((a, b) => (ymd(b.date) > ymd(a.date) ? b : a));
+    if (ymd(today) > ymd(latestHist.date)) {
+      let tg = null, ts = null;
+      for (const tr of doc.querySelectorAll('tr')) {
+        const cells = [...tr.querySelectorAll('td,th')].map(x => x.textContent.replace(/\s+/g, ' ').trim());
+        if (!cells.length || /\d{2}\/\d{2}\/\d{4}/.test(cells[0])) continue;
+        const vals = cells.slice(1).map(num).filter(isNum);
+        if (!vals.length) continue;
+        if (!tg && /^(gold\s*)?999\b/i.test(cells[0])) tg = vals;
+        else if (!ts && /silver/i.test(cells[0])) ts = vals;
+      }
+      const near = (v, ref) => isNum(v) && isNum(ref) && Math.abs(v / ref - 1) < 0.15;
+      if (tg) {
+        ['AM', 'PM'].forEach((s, i) => {
+          if (near(tg[i], latestHist.gold)) {
+            obs.push({ date: today, session: s, gold: tg[i], silver: ts && near(ts[i], latestHist.silver) ? ts[i] : NaN });
+          }
+        });
+      }
+    }
+
+    const ord = o => ymd(o.date) * 10 + (o.session === 'PM' ? 1 : 0);
+    const uniq = new Map();
+    obs.forEach(o => uniq.set(ord(o), o));
+    const sorted = [...uniq.values()].sort((a, b) => ord(a) - ord(b));
+    const series = k => sorted.filter(o => isNum(o[k])).map(o => ({ date: o.date, session: o.session, v: o[k] }));
+    return { gold: series('gold'), silver: series('silver') };
+  });
+}
+
+/* Crypto: CoinGecko (browser-friendly) → Binance fallback */
+function crypto() {
+  const cg = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true';
+  return acquire([cg], t => {
+    const j = parseJSON(t);
+    const pick = k => {
+      const p = j[k].usd, c = j[k].usd_24h_change;
+      if (!isNum(p) || !isNum(c)) throw new Error('bad cg');
+      return { price: p, prev: p / (1 + c / 100), state: 'live' };
+    };
+    return { btc: pick('bitcoin'), eth: pick('ethereum') };
+  }, { direct: true }).catch(() => {
+    const bn = 'https://api.binance.com/api/v3/ticker/24hr?symbols=' + encodeURIComponent('["BTCUSDT","ETHUSDT"]');
+    return acquire([bn], t => {
+      const arr = parseJSON(t);
+      const pick = s => {
+        const r = arr.find(x => x.symbol === s);
+        const p = num(r.lastPrice), o = num(r.openPrice);
+        if (!isNum(p) || !isNum(o)) throw new Error('bad binance');
+        return { price: p, prev: o, state: 'live' };
+      };
+      return { btc: pick('BTCUSDT'), eth: pick('ETHUSDT') };
+    }, { direct: true });
+  });
+}
+
+
+/* India prices: IBJA → Groww (republishes IBJA) → MCX futures (5paisa) */
+const MONIDX = s => MONTHS[String(s).toLowerCase()] ?? MONTHS[String(s).slice(0, 3).toLowerCase()];
+const pageText = t => new DOMParser().parseFromString(t, 'text/html').body.textContent.replace(/ /g, ' ').replace(/\s+/g, ' ');
+function groww(metal) {
+  const gold = metal === 'gold';
+  const url = 'https://groww.in/' + (gold ? 'gold-rates' : 'silver-rates');
+  const per10 = gold ? 1 : 100, perG = gold ? 10 : 1000;
+  return acquire([url], t => {
+    const text = pageText(t);
+    const lab = gold ? '24\\s*K\\s*Gold' : 'Silver';
+    let m = text.match(new RegExp(lab + "\\s*/\\s*10\\s*gm\\s*(\\d{1,2})\\s+([A-Za-z]{3,9})\\.?\\s+'?(\\d{2,4})\\s*₹\\s*([\\d,]+(?:\\.\\d+)?)\\s*([+\\-−]?\\s*[\\d,]+(?:\\.\\d+)?)\\s*\\(", 'i'));
+    if (m) {
+      const price = num(m[4]) * per10, ch = num(m[5].replace('−', '-').replace(/\s/g, '')) * per10;
+      const y = +m[3] < 100 ? 2000 + +m[3] : +m[3];
+      const d = new Date(y, MONIDX(m[2]), +m[1]);
+      if (!isNum(price)) throw new Error('groww: bad price');
+      return { price, prev: price - ch, date: d };
+    }
+    m = text.match(/stands at\s*₹\s*([\d,]+(?:\.\d+)?)\s*per\s*gram/i);
+    if (!m) throw new Error('groww: price not found');
+    const price = num(m[1]) * perG;
+    const dm = text.match(/Today in India\s*\((\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})\)/);
+    const d = dm ? new Date(+dm[3], MONIDX(dm[2]), +dm[1]) : null;
+    let prev = NaN;
+    for (const h of text.matchAll(/(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})\s*\|?\s*₹\s*([\d,]+(?:\.\d+)?)/g)) {
+      const hd = new Date(+h[3], MONIDX(h[2]), +h[1]);
+      let v = num(h[4]);
+      const k = [1, 10, 100, 1000].find(k => Math.abs(v * k / price - 1) < 0.06);
+      if (!k) continue;
+      v *= k;
+      if (d && hd < d) { prev = v; break; }
+    }
+    return { price, prev, date: d };
+  });
+}
+function mcx5paisa(metal) {
+  return acquire(['https://www.5paisa.com/commodity-trading/mcx-' + metal + '-price'], t => {
+    const text = pageText(t);
+    const pm = text.match(/Previous\s*Close\s*\|?\s*:?\s*(?:₹\s*)?([\d,]+(?:\.\d+)?)/i);
+    if (!pm) throw new Error('5paisa: no previous close');
+    const prev = num(pm[1]);
+    let price = NaN;
+    for (const m of text.matchAll(/₹\s*([\d,]+(?:\.\d+)?)/g)) {
+      const v = num(m[1]);
+      if (Math.abs(v / prev - 1) < 0.10) { price = v; break; }
+    }
+    if (!isNum(price)) throw new Error('5paisa: no price');
+    const dm = text.match(/As on\s*(\d{1,2})\s+([A-Za-z]+),?\s+(\d{4})/i);
+    return { price, prev, date: dm ? new Date(+dm[3], MONIDX(dm[2]), +dm[1]) : null };
+  });
+}
+function indiaTile(metal) {
+  const unit = metal === 'gold' ? '₹ / 10 g' : '₹ / kg';
+  const [lo, hi] = metal === 'gold' ? [30000, 1500000] : [30000, 3000000];
+  const ok = r => r && isNum(r.price) && r.price > lo && r.price < hi;
+  const tail = (tag, d) => `${unit} · ${tag}${d ? ' · ' + shortDate(d) : ''}`;
+  return async () => {
+    try {
+      const r = fromIbja((await once('ibja', ibja))[metal], unit);
+      if (ok(r)) return { ...r, unit: r.unit.replace(unit, unit + ' · IBJA'), href: 'https://ibjarates.com/' };
+    } catch (e) {}
+    try {
+      const r = await groww(metal);
+      if (ok(r)) return { price: r.price, prev: r.prev, state: 'delayed', backup: true, unit: tail('Groww', r.date),
+        href: 'https://groww.in/' + metal + '-rates' };
+    } catch (e) {}
+    const r = await mcx5paisa(metal);
+    if (!ok(r)) throw new Error('mcx: implausible');
+    return { price: r.price, prev: r.prev, state: 'delayed', backup: true, unit: tail('MCX futures', r.date),
+      href: 'https://www.5paisa.com/commodity-trading/mcx-' + metal + '-price' };
+  };
+}
+
+/* ---------------- per-refresh memo ---------------- */
+let memo = new Map();
+const once = (k, f) => { if (!memo.has(k)) memo.set(k, f()); return memo.get(k); };
+
+/* series → tile result helpers */
+function fromIbja(series, unit) {
+  if (series.length < 1) throw new Error('no data');
+  const last = series[series.length - 1];
+  // compare with the previous day's same session (PM vs PM, AM vs AM)
+  let prev = null;
+  for (let i = series.length - 2; i >= 0; i--) {
+    if (ymd(series[i].date) < ymd(last.date) && series[i].session === last.session) { prev = series[i]; break; }
+  }
+  if (!prev && series.length > 1) prev = series[series.length - 2];
+  return { price: last.v, prev: prev ? prev.v : NaN, state: 'delayed', unit: `${unit} · ${shortDate(last.date)} ${last.session}` };
+}
+
+async function goldSilverPair() {
+  // Prefer LBMA fixes; fall back to COMEX futures
+  const [g, s] = await Promise.allSettled([once('lbmaG', () => lbmaSeries('gold_pm')), once('lbmaS', () => lbmaSeries('silver'))]);
+  if (g.status === 'fulfilled' && s.status === 'fulfilled') {
+    const sm = new Map(s.value.map(r => [r.d, r.v]));
+    const common = g.value.filter(r => sm.has(r.d));
+    if (common.length >= 1) {
+      const a = common[common.length - 1], b = common[common.length - 2];
+      return { price: a.v / sm.get(a.d), prev: b ? b.v / sm.get(b.d) : NaN, state: 'delayed', unit: 'LBMA fixes · ' + shortDate(isoToDate(a.d)) };
+    }
+  }
+  const [gf, sf] = await Promise.all([once('GC=F', () => yahoo('GC=F')), once('SI=F', () => yahoo('SI=F'))]);
+  return { price: gf.price / sf.price, prev: gf.prev / sf.prev, state: gf.state, unit: 'COMEX futures' };
+}
+
+function lbmaTile(file, futSym, label) {
+  return async () => {
+    try {
+      const rows = await once(file === 'gold_pm' ? 'lbmaG' : 'lbmaS', () => lbmaSeries(file));
+      const a = rows[rows.length - 1], b = rows[rows.length - 2];
+      return { price: a.v, prev: b.v, state: 'delayed', unit: `US$ / oz · ${label} · ${shortDate(isoToDate(a.d))}` };
+    } catch (e) {
+      const f = await once(futSym, () => yahoo(futSym));
+      return { ...f, name: (file === 'gold_pm' ? 'Gold' : 'Silver') + ' · COMEX', unit: 'US$ / oz · futures' };
+    }
+  };
+}
+
+function lmeTile(field, fallback) {
+  return async () => {
+    try {
+      const rows = await lmeSeries(field);
+      return { price: rows[0].v, prev: rows[1].v, state: 'delayed', unit: 'US$ / t · LME · ' + shortDate(rows[0].date) };
+    } catch (e) {
+      if (!fallback) throw e;
+      return fallback();
+    }
+  };
+}
+
+const yf = sym => () => once(sym, () => yahoo(sym));
+
+/* ---------------- layout config ---------------- */
+const Y = s => 'https://finance.yahoo.com/quote/' + encodeURIComponent(s);
+const SECTIONS = [
+  { title: 'Bullion &amp; Crude', src: 'India · LBMA · Brent', groups: [{ tiles: [
+    { id: 'ibjaGold', name: 'India Gold 24K', unit: '₹ / 10 g', cls: 'hero gold', cur: '₹', dp: 0, loc: 'en-IN', href: 'https://ibjarates.com/',
+      load: indiaTile('gold') },
+    { id: 'ibjaSilver', name: 'India Silver 999', unit: '₹ / kg', cls: 'hero silver', cur: '₹', dp: 0, loc: 'en-IN', href: 'https://ibjarates.com/',
+      load: indiaTile('silver') },
+    { id: 'lbmaGold', name: 'LBMA Gold', unit: 'US$ / oz', cls: 'gold', cur: '$', dp: 2, href: 'https://www.lbma.org.uk/prices-and-data/precious-metal-prices',
+      load: lbmaTile('gold_pm', 'GC=F', 'PM') },
+    { id: 'lbmaSilver', name: 'LBMA Silver', unit: 'US$ / oz', cls: 'silver', cur: '$', dp: 2, href: 'https://www.lbma.org.uk/prices-and-data/precious-metal-prices',
+      load: lbmaTile('silver', 'SI=F', 'fix') },
+    { id: 'gsr', name: 'Gold / Silver', unit: 'ratio', cur: '', dp: 2, href: 'https://www.lbma.org.uk/prices-and-data/precious-metal-prices',
+      load: goldSilverPair },
+    { id: 'brent', name: 'Crude Oil · Brent', unit: 'US$ / bbl · futures', cur: '$', dp: 2, href: Y('BZ=F'), load: yf('BZ=F') },
+  ]}]},
+  { title: 'Currency', src: 'FX', groups: [{ tiles: [
+    { id: 'usdinr', name: 'USD / INR', unit: '₹ per US$', cur: '₹', dp: 2, href: Y('INR=X'), load: yf('INR=X') },
+    { id: 'dxy', name: 'US Dollar Index', unit: 'DXY', cur: '', dp: 2, href: Y('DX-Y.NYB'), load: yf('DX-Y.NYB') },
+  ]}]},
+  { title: 'Base Metals', src: 'LME · cash settlement', groups: [{ tiles: [
+    { id: 'copper', name: 'Copper', unit: 'US$ / t', cur: '$', dp: 0, href: 'https://www.westmetall.com/en/markdaten.php?action=table&field=LME_Cu_cash',
+      load: lmeTile('LME_Cu_cash', async () => {
+        const f = await once('HG=F', () => yahoo('HG=F')); const k = 2204.62;
+        return { price: f.price * k, prev: f.prev * k, state: f.state, name: 'Copper · COMEX', unit: 'US$ / t · futures' };
+      }) },
+    { id: 'zinc', name: 'Zinc', unit: 'US$ / t', cur: '$', dp: 0, href: 'https://www.westmetall.com/en/markdaten.php?action=table&field=LME_Zn_cash',
+      load: lmeTile('LME_Zn_cash') },
+  ]}]},
+  { title: 'Crypto', src: '24h change', groups: [{ tiles: [
+    { id: 'btc', name: 'Bitcoin', unit: 'BTC · US$', cur: '$', dp: 0, href: 'https://www.coingecko.com/en/coins/bitcoin',
+      load: async () => (await once('crypto', crypto)).btc },
+    { id: 'eth', name: 'Ethereum', unit: 'ETH · US$', cur: '$', dp: 0, href: 'https://www.coingecko.com/en/coins/ethereum',
+      load: async () => (await once('crypto', crypto)).eth },
+  ]}]},
+  { title: 'Indian Equities', src: '', statusFor: ['nifty', 'sensex'], groups: [{ tiles: [
+    { id: 'nifty', name: 'NIFTY 50', unit: 'NSE', cur: '', dp: 2, loc: 'en-IN', href: Y('^NSEI'), load: yf('^NSEI') },
+    { id: 'sensex', name: 'SENSEX', unit: 'BSE', cur: '', dp: 2, loc: 'en-IN', href: Y('^BSESN'), load: yf('^BSESN') },
+  ]}]},
+  { title: 'Global Equities', src: 'Index levels', groups: [
+    { label: 'United States', tiles: [
+      { id: 'spx', name: 'S&amp;P 500', unit: 'SPX', cur: '', dp: 2, href: Y('^GSPC'), load: yf('^GSPC') },
+      { id: 'ixic', name: 'Nasdaq Composite', unit: 'IXIC', cur: '', dp: 2, href: Y('^IXIC'), load: yf('^IXIC') },
+    ]},
+    { label: 'Asia', cls: 'g4', tiles: [
+      { id: 'n225', name: 'Nikkei 225', unit: 'Japan', cur: '', dp: 2, href: Y('^N225'), load: yf('^N225') },
+      { id: 'hsi', name: 'Hang Seng', unit: 'Hong Kong', cur: '', dp: 2, href: Y('^HSI'), load: yf('^HSI') },
+      { id: 'kospi', name: 'KOSPI', unit: 'South Korea', cur: '', dp: 2, href: Y('^KS11'), load: yf('^KS11') },
+      { id: 'csi300', name: 'CSI 300', unit: 'China', cur: '', dp: 2, href: Y('000300.SS'), load: yf('000300.SS') },
+    ]},
+  ]},
+];
+
+/* ---------------- rendering ---------------- */
+const TILES = [];
+function build() {
+  const main = $('#main');
+  let html = '';
+  SECTIONS.forEach((sec, si) => {
+    html += `<section><div class="sec-head"><h2><span class="rank">${si + 1}</span>${sec.title}</h2>` +
+            `<div class="src" id="src-${si}">${sec.src}</div></div>`;
+    sec.groups.forEach((g, gi) => {
+      if (g.label) html += `<div class="sub-head"><span>${g.label}</span><span class="sub-status" id="sub-${si}-${gi}"></span></div>`;
+      html += `<div class="grid ${g.cls || ''}">`;
+      g.tiles.forEach(t => {
+        TILES.push(t);
+        html += `<a class="tile ${t.cls || ''}" id="t-${t.id}" href="${t.href}" target="_blank" rel="noopener">
+          <div class="top"><div><div class="name">${t.name}</div><div class="unit">${t.unit}</div></div><span class="dot"></span></div>
+          <div class="price num"><span class="skel"></span></div>
+          <div class="chg num"><span class="skel"></span></div>
+        </a>`;
+      });
+      html += `</div>`;
+    });
+    html += `</section>`;
+  });
+  html += `<div class="legend">
+      <span><i class="dot live"></i>Market open</span>
+      <span><i class="dot delayed"></i>Daily published rate</span>
+      <span><i class="dot stale"></i>Market closed · last close</span>
+    </div>
+    <p class="note">Change is versus the previous close (IBJA: previous day's same session; crypto: 24 h).
+    Sources: India prices from <a href="https://ibjarates.com/" target="_blank" rel="noopener">IBJA</a>, then Groww, then MCX futures;
+    <a href="https://www.lbma.org.uk/prices-and-data/precious-metal-prices" target="_blank" rel="noopener">LBMA</a>,
+    LME via <a href="https://www.westmetall.com/en/markdaten.php" target="_blank" rel="noopener">Westmetall</a>,
+    Yahoo Finance (may lag ~15 min) and CoinGecko. Tap any tile to open its source.</p>`;
+  main.innerHTML = html;
+}
+
+const fmtN = (v, dp, loc = 'en-US') => v.toLocaleString(loc, { minimumFractionDigits: dp, maximumFractionDigits: dp });
+
+function paint(t, r) {
+  const el = document.getElementById('t-' + t.id);
+  const priceEl = el.querySelector('.price'), chgEl = el.querySelector('.chg'), dot = el.querySelector('.dot'), unitEl = el.querySelector('.unit');
+  el.querySelector('.name').innerHTML = (r && r.name) || t.name;
+  el.setAttribute('href', (r && r.href) || t.href);
+  el.classList.remove('err');
+  if (!r) {
+    el.classList.add('err');
+    priceEl.textContent = '—';
+    chgEl.className = 'chg num';
+    chgEl.textContent = "Couldn't load";
+    dot.className = 'dot';
+    unitEl.innerHTML = t.unit;
+    return;
+  }
+  const loc = t.loc || 'en-US';
+  priceEl.textContent = t.cur + fmtN(r.price, t.dp, loc);
+  unitEl.innerHTML = r.unit || t.unit;
+  dot.className = 'dot ' + (r.state || 'delayed');
+  dot.title = { live: 'Market open', delayed: 'Daily published rate', stale: 'Market closed · last close' }[r.state] || '';
+  if (isNum(r.prev) && r.prev !== 0) {
+    const d = r.price - r.prev, pct = d / r.prev * 100;
+    const cdp = Math.abs(d) < 1 && t.dp < 2 ? 2 : t.dp;
+    const rounded = Number(Math.abs(d).toFixed(cdp));
+    const dir = rounded === 0 ? '' : d > 0 ? 'up' : 'down';
+    const sign = dir === 'up' ? '+' : dir === 'down' ? '−' : '';
+    chgEl.className = 'chg num ' + dir;
+    chgEl.innerHTML = `<span>${sign}${fmtN(Math.abs(d), cdp, loc)}</span><span class="badge">${sign}${Math.abs(pct).toFixed(2)}%</span>`;
+  } else {
+    chgEl.className = 'chg num';
+    chgEl.textContent = '';
+  }
+}
+
+function setStatus(si, gi, states) {
+  const el = gi == null ? document.getElementById('src-' + si) : document.getElementById(`sub-${si}-${gi}`);
+  if (!el) return;
+  const got = states.filter(Boolean);
+  if (!got.length) { el.textContent = ''; return; }
+  const open = got.includes('live');
+  el.innerHTML = `<i class="dot ${open ? 'live' : 'stale'}"></i>${open ? 'Open' : 'Closed'}`;
+}
+
+let loading = false;
+async function refresh() {
+  if (loading) return;
+  loading = true;
+  memo = new Map();
+  const btn = $('#refresh');
+  btn.disabled = true; btn.classList.add('busy');
+  const pill = $('#status');
+  pill.className = 'pill'; pill.textContent = 'Fetching';
+  const results = {};
+  let ok = 0, fail = 0;
+  await Promise.all(TILES.map(async t => {
+    let r = null;
+    try { r = await t.load(); if (!r || !isNum(r.price)) r = null; } catch (e) { console.warn(t.id, e); }
+    results[t.id] = r;
+    r ? ok++ : fail++;
+    paint(t, r);
+    pill.textContent = `${ok + fail} / ${TILES.length}`;
+  }));
+  // market open/closed labels for equity groups
+  SECTIONS.forEach((sec, si) => {
+    if (sec.statusFor) setStatus(si, null, sec.statusFor.map(id => results[id] && results[id].state));
+    sec.groups.forEach((g, gi) => { if (g.label) setStatus(si, gi, g.tiles.map(t => results[t.id] && results[t.id].state)); });
+  });
+  const now = new Date();
+  $('#stamp').textContent = now.toLocaleDateString('en-GB', { weekday: 'short' }) + ', ' + shortDate(now) + ' · ' +
+    now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  pill.className = 'pill ' + (fail === 0 ? 'ok' : 'warn');
+  pill.textContent = fail === 0 ? 'All loaded' : `${ok} of ${TILES.length} loaded`;
+  btn.disabled = false; btn.classList.remove('busy');
+  loading = false;
+  lastRun = Date.now();
+}
+
+/* ---------------- auto refresh ---------------- */
+let timer = null, lastRun = 0;
+const autoBtn = $('#auto');
+function setAuto(on) {
+  autoBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  store.set('mp.auto', on ? '1' : '0');
+  clearInterval(timer);
+  if (on) timer = setInterval(() => { if (!document.hidden) refresh(); }, AUTO_MS);
+}
+autoBtn.addEventListener('click', () => setAuto(autoBtn.getAttribute('aria-pressed') !== 'true'));
+$('#refresh').addEventListener('click', refresh);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && autoBtn.getAttribute('aria-pressed') === 'true' && Date.now() - lastRun > AUTO_MS) refresh();
+});
+
+build();
+setAuto(store.get('mp.auto') !== '0');
+refresh();
+</script>
+</body>
+</html>
