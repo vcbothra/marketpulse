@@ -84,25 +84,26 @@ def yahoo(sym):
         try:
             r = get(f"https://{host}.finance.yahoo.com/v8/finance/chart/{requests.utils.quote(sym)}",
                     params={"range": "5d", "interval": "1d"})
-            m = r.json()["chart"]["result"][0]["meta"]
+            res = r.json()["chart"]["result"][0]
+            m = res["meta"]
             price = m["regularMarketPrice"]
+            off = m.get("gmtoffset", 0)
+            mkt_day = dt.datetime.fromtimestamp(m["regularMarketTime"] + off, dt.timezone.utc).date()
             prev = m.get("previousClose")
             if prev is None:
-                # derive previous close from daily bars
-                res = r.json()["chart"]["result"][0]
-                closes = [c for c in res["indicators"]["quote"][0]["close"] if c is not None]
+                # Previous close = last daily close dated *before* the market day.
+                # Bars with no close (holidays) are skipped, so a market that was shut
+                # today still compares its last session with the one before it.
                 ts = res.get("timestamp") or []
-                off = m.get("gmtoffset", 0)
-                last_bar_day = dt.datetime.fromtimestamp(ts[-1] + off, dt.timezone.utc).date() if ts else None
-                mkt_day = dt.datetime.fromtimestamp(m["regularMarketTime"] + off, dt.timezone.utc).date()
-                if last_bar_day == mkt_day and len(closes) >= 2:
-                    prev = closes[-2]
-                elif closes:
-                    prev = closes[-1]
+                closes = res["indicators"]["quote"][0]["close"]
+                bars = [(dt.datetime.fromtimestamp(t + off, dt.timezone.utc).date(), c)
+                        for t, c in zip(ts, closes) if c is not None]
+                earlier = [c for d, c in bars if d < mkt_day]
+                if earlier:
+                    prev = earlier[-1]
             if prev is None:
-                prev = m.get("chartPreviousClose")
-            asof = dt.datetime.fromtimestamp(m["regularMarketTime"] + m.get("gmtoffset", 0), dt.timezone.utc).date()
-            return dict(price=float(price), prev=float(prev), asof=asof)
+                raise SourceError("no previous close")
+            return dict(price=float(price), prev=float(prev), asof=mkt_day)
         except (SourceError, KeyError, IndexError, TypeError, ValueError) as e:
             last = e
     raise SourceError(f"yahoo {sym}: {last}")
@@ -614,6 +615,41 @@ def valid(item_id, x):
     return True
 
 
+# Items whose first source can jump (e.g. a futures contract rolling over):
+# every source is fetched and the value most sources agree on is used.
+CROSS_CHECK = {"brent"}
+AGREE = 0.02  # within 2 % counts as agreeing
+
+
+def cross_check(item_id, chain, chosen, log):
+    found = [chosen]
+    for rank, (label, fn, extra) in enumerate(chain):
+        if rank <= chosen["rank"]:
+            continue
+        try:
+            x = fn()
+            if valid(item_id, x):
+                found.append({**x, "source": label, "rank": rank, **extra})
+        except Exception:  # noqa: BLE001
+            pass
+    if len(found) < 2:
+        return chosen
+    prices = sorted(f["price"] for f in found)
+    mid = prices[len(prices) // 2] if len(prices) % 2 else (prices[len(prices) // 2 - 1] + prices[len(prices) // 2]) / 2
+    close_to_mid = [f for f in found if abs(f["price"] / mid - 1) <= AGREE]
+    others = ", ".join(f"{f['source']} {f['price']:.2f}" for f in found if f is not chosen)
+    if len(found) >= 3 and close_to_mid and chosen not in close_to_mid:
+        pick = close_to_mid[0]  # first in chain order among the agreeing ones
+        log.append(f"  xchk {item_id:<11} {chosen['source']} {chosen['price']:.2f} disagreed; using {pick['source']} ({others})")
+        return {**pick, "note": f"{chosen['source']} disagreed", "rank": max(pick["rank"], 1)}
+    spread = abs(prices[-1] / prices[0] - 1)
+    if spread > AGREE * 1.5 and not (len(found) >= 3 and chosen in close_to_mid):
+        log.append(f"  xchk {item_id:<11} sources differ by {spread:.1%} ({others}); kept {chosen['source']}")
+        return {**chosen, "note": f"sources differ by {spread:.0%}", "rank": max(chosen["rank"], 1)}
+    log.append(f"  xchk {item_id:<11} agrees with {others}")
+    return chosen
+
+
 def collect():
     results, log = {}, []
     for item_id, chain in CHAINS.items():
@@ -628,6 +664,8 @@ def collect():
                 break
             except Exception as e:  # noqa: BLE001 — any failure moves on to the next source
                 log.append(f"  fail {item_id:<11} {label:<28} {str(e)[:90]}")
+        if item_id in CROSS_CHECK and results[item_id]:
+            results[item_id] = cross_check(item_id, chain, results[item_id], log)
     # Gold/Silver ratio from whatever gold & silver we got (same family preferred)
     g, s = results.get("lbmaGold"), results.get("lbmaSilver")
     if g and s:
@@ -683,7 +721,7 @@ def build_payload(results, now):
                 tile["loc"] = t.get("loc", "en-US")
                 tile["unit"] = unit_for(t, r)
                 if r:
-                    tile.update(price=r["price"], prev=r.get("prev"), source=r["source"], rank=r["rank"],
+                    tile.update(price=r["price"], prev=r.get("prev"), source=r["source"], rank=r["rank"], note=r.get("note"),
                                 href=r.get("href", ""), name=r.get("name", t["name"]),
                                 asof=r["asof"].isoformat() if r.get("asof") else None)
                 tiles.append(tile)

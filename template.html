@@ -294,7 +294,7 @@ function body() {
       h += `<div class="grid ${esc(g.cls)}">` + g.tiles.map(tileHTML).join('') + `</div>`;
       g.tiles.forEach(t => {
         const has = isNum(t.price);
-        rows += `<tr><td>${esc(t.name)}</td><td><i class="dot ${has ? (t.rank > 0 ? 'backup' : 'primary') : ''}"></i>${has ? esc(t.source) : 'All sources failed'}</td><td class="num" style="white-space:nowrap">${t.asof ? (+t.asof.slice(8)) + ' ' + MON3[+t.asof.slice(5, 7) - 1] : ''}</td></tr>`;
+        rows += `<tr><td>${esc(t.name)}</td><td><i class="dot ${has ? (t.rank > 0 ? 'backup' : 'primary') : ''}"></i>${has ? esc(t.source) + (t.note ? ' <b>(' + esc(t.note) + ')</b>' : '') : 'All sources failed'}</td><td class="num" style="white-space:nowrap">${t.asof ? (+t.asof.slice(8)) + ' ' + MON3[+t.asof.slice(5, 7) - 1] : ''}</td></tr>`;
       });
     });
     h += `</section>`;
