@@ -1,0 +1,396 @@
+{
+ "generated": "2026-10-23T05:36+05:30",
+ "sections": [
+  {
+   "title": "Bullion & Crude",
+   "src": "India · LBMA · Brent",
+   "groups": [
+    {
+     "label": "",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "ibjaGold",
+       "name": "India Gold 24K",
+       "unit": "₹ / 10 g · IBJA · 22 Oct PM",
+       "cur": "₹",
+       "dp": 0,
+       "cls": "hero gold",
+       "loc": "en-IN",
+       "price": 142694.0,
+       "prev": 144105.0,
+       "source": "IBJA · ibjarates.com",
+       "rank": 0,
+       "note": null,
+       "href": "https://ibjarates.com/",
+       "asof": "2026-10-22"
+      },
+      {
+       "id": "ibjaSilver",
+       "name": "India Silver 999",
+       "unit": "₹ / kg · IBJA · 22 Oct PM",
+       "cur": "₹",
+       "dp": 0,
+       "cls": "hero silver",
+       "loc": "en-IN",
+       "price": 199777.0,
+       "prev": 206783.0,
+       "source": "IBJA · ibjarates.com",
+       "rank": 0,
+       "note": null,
+       "href": "https://ibjarates.com/",
+       "asof": "2026-10-22"
+      },
+      {
+       "id": "lbmaGold",
+       "name": "Gold · COMEX",
+       "unit": "US$ / oz · futures · 22 Oct",
+       "cur": "$",
+       "dp": 2,
+       "cls": "gold",
+       "loc": "en-US",
+       "price": 4039.1,
+       "prev": 4150.0,
+       "source": "COMEX futures · Yahoo",
+       "rank": 2,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/GC%3DF",
+       "asof": "2026-10-22"
+      },
+      {
+       "id": "lbmaSilver",
+       "name": "Silver · COMEX",
+       "unit": "US$ / oz · futures · 22 Oct",
+       "cur": "$",
+       "dp": 2,
+       "cls": "silver",
+       "loc": "en-US",
+       "price": 54.61,
+       "prev": 57.422000885009766,
+       "source": "COMEX futures · Yahoo",
+       "rank": 1,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/SI%3DF",
+       "asof": "2026-10-22"
+      },
+      {
+       "id": "gsr",
+       "name": "Gold / Silver",
+       "unit": "ratio · 22 Oct",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 73.96264420435817,
+       "prev": 72.27195040295737,
+       "source": "Derived · COMEX futures · Yahoo",
+       "rank": 1,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/GC%3DF",
+       "asof": "2026-10-22"
+      },
+      {
+       "id": "brent",
+       "name": "Crude Oil · Brent",
+       "unit": "US$ / bbl · 22 Oct",
+       "cur": "$",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 113.23,
+       "prev": 108.81999969482422,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/BZ%3DF",
+       "asof": "2026-10-22"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Currency",
+   "src": "FX",
+   "groups": [
+    {
+     "label": "",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "usdinr",
+       "name": "USD / INR",
+       "unit": "₹ per US$ · 23 Oct",
+       "cur": "₹",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 94.808,
+       "prev": 94.31230163574219,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/INR%3DX",
+       "asof": "2026-10-23"
+      },
+      {
+       "id": "dxy",
+       "name": "US Dollar Index",
+       "unit": "DXY · 22 Oct",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 101.563,
+       "prev": 101.77999877929688,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/DX-Y.NYB",
+       "asof": "2026-10-22"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Base Metals",
+   "src": "LME · cash settlement",
+   "groups": [
+    {
+     "label": "",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "copper",
+       "name": "Copper · COMEX",
+       "unit": "US$ / t · from US$/lb",
+       "cur": "$",
+       "dp": 0,
+       "cls": "",
+       "loc": "en-US",
+       "price": 14043.429399999999,
+       "prev": 14430.157624332101,
+       "source": "COMEX · Trading Economics",
+       "rank": 1,
+       "note": null,
+       "href": "https://tradingeconomics.com/commodity/copper",
+       "asof": null
+      },
+      {
+       "id": "zinc",
+       "name": "Zinc",
+       "unit": "US$ / t",
+       "cur": "$",
+       "dp": 0,
+       "cls": "",
+       "loc": "en-US",
+       "price": 3676.95,
+       "prev": 3750.0764915859254,
+       "source": "Trading Economics",
+       "rank": 1,
+       "note": null,
+       "href": "https://tradingeconomics.com/commodity/zinc",
+       "asof": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Crypto",
+   "src": "24h change",
+   "groups": [
+    {
+     "label": "",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "btc",
+       "name": "Bitcoin",
+       "unit": "BTC · US$",
+       "cur": "$",
+       "dp": 0,
+       "cls": "",
+       "loc": "en-US",
+       "price": 81234.0,
+       "prev": 84216.29650059821,
+       "source": "CoinGecko",
+       "rank": 0,
+       "note": null,
+       "href": "https://www.coingecko.com/en/coins/bitcoin",
+       "asof": "2026-10-23"
+      },
+      {
+       "id": "eth",
+       "name": "Ethereum",
+       "unit": "ETH · US$",
+       "cur": "$",
+       "dp": 0,
+       "cls": "",
+       "loc": "en-US",
+       "price": 2384.21,
+       "prev": 2477.942054839741,
+       "source": "CoinGecko",
+       "rank": 0,
+       "note": null,
+       "href": "https://www.coingecko.com/en/coins/ethereum",
+       "asof": "2026-10-23"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Indian Equities",
+   "src": "NSE · BSE",
+   "groups": [
+    {
+     "label": "",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "nifty",
+       "name": "NIFTY 50",
+       "unit": "NSE · 22 Oct",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-IN",
+       "price": 22687.65,
+       "prev": 22811.349609375,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5ENSEI",
+       "asof": "2026-10-22"
+      },
+      {
+       "id": "sensex",
+       "name": "SENSEX",
+       "unit": "BSE · 22 Oct",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-IN",
+       "price": 73249.39,
+       "prev": 73709.6875,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EBSESN",
+       "asof": "2026-10-22"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Global Equities",
+   "src": "Index levels",
+   "groups": [
+    {
+     "label": "United States",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "spx",
+       "name": "S&P 500",
+       "unit": "SPX · 22 Oct",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 7663.43,
+       "prev": 7757.169921875,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EGSPC",
+       "asof": "2026-10-22"
+      },
+      {
+       "id": "ixic",
+       "name": "Nasdaq Composite",
+       "unit": "IXIC · 22 Oct",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 26008.86,
+       "prev": 26702.859375,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EIXIC",
+       "asof": "2026-10-22"
+      }
+     ]
+    },
+    {
+     "label": "Asia",
+     "cls": "g4",
+     "tiles": [
+      {
+       "id": "n225",
+       "name": "Nikkei 225",
+       "unit": "Japan · 22 Oct",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 62907.84,
+       "prev": 64621.23828125,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EN225",
+       "asof": "2026-10-22"
+      },
+      {
+       "id": "hsi",
+       "name": "Hang Seng",
+       "unit": "Hong Kong · 22 Oct",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 22934.68,
+       "prev": 23651.869140625,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EHSI",
+       "asof": "2026-10-22"
+      },
+      {
+       "id": "kospi",
+       "name": "KOSPI",
+       "unit": "South Korea · 22 Oct",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 5533.77,
+       "prev": 5735.66015625,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EKS11",
+       "asof": "2026-10-22"
+      },
+      {
+       "id": "csi300",
+       "name": "CSI 300",
+       "unit": "China",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
