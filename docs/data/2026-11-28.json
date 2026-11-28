@@ -1,0 +1,396 @@
+{
+ "generated": "2026-11-28T08:58+05:30",
+ "sections": [
+  {
+   "title": "Bullion & Crude",
+   "src": "India · LBMA · Brent",
+   "groups": [
+    {
+     "label": "",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "ibjaGold",
+       "name": "India Gold 24K",
+       "unit": "₹ / 10 g · IBJA · 27 Nov PM",
+       "cur": "₹",
+       "dp": 0,
+       "cls": "hero gold",
+       "loc": "en-IN",
+       "price": 126299.0,
+       "prev": 122641.0,
+       "source": "IBJA · ibjarates.com",
+       "rank": 0,
+       "note": null,
+       "href": "https://ibjarates.com/",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "ibjaSilver",
+       "name": "India Silver 999",
+       "unit": "₹ / kg · IBJA · 27 Nov PM",
+       "cur": "₹",
+       "dp": 0,
+       "cls": "hero silver",
+       "loc": "en-IN",
+       "price": 154300.0,
+       "prev": 147347.0,
+       "source": "IBJA · ibjarates.com",
+       "rank": 0,
+       "note": null,
+       "href": "https://ibjarates.com/",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "lbmaGold",
+       "name": "LBMA Gold",
+       "unit": "US$ / oz · PM · 27 Nov",
+       "cur": "$",
+       "dp": 2,
+       "cls": "gold",
+       "loc": "en-US",
+       "price": 3672.1,
+       "prev": 3562.4,
+       "source": "LBMA fix via Westmetall",
+       "rank": 1,
+       "note": null,
+       "href": "https://www.westmetall.com/en/markdaten.php?action=table&field=USD_ozt_London",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "lbmaSilver",
+       "name": "Silver · COMEX",
+       "unit": "US$ / oz · futures · 27 Nov",
+       "cur": "$",
+       "dp": 2,
+       "cls": "silver",
+       "loc": "en-US",
+       "price": 43.702,
+       "prev": 40.051998138427734,
+       "source": "COMEX futures · Yahoo",
+       "rank": 1,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/SI%3DF",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "gsr",
+       "name": "Gold / Silver",
+       "unit": "ratio · 27 Nov",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 84.02590270468171,
+       "prev": 88.94437645002458,
+       "source": "Derived · LBMA fix via Westmetall / COMEX futures · Yahoo",
+       "rank": 1,
+       "note": null,
+       "href": "https://www.westmetall.com/en/markdaten.php?action=table&field=USD_ozt_London",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "brent",
+       "name": "Crude Oil · Brent",
+       "unit": "US$ / bbl · 27 Nov",
+       "cur": "$",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 95.44,
+       "prev": 95.44,
+       "source": "CNBC",
+       "rank": 1,
+       "note": "Yahoo Finance disagreed",
+       "href": "https://www.cnbc.com/quotes/%40LCO.1",
+       "asof": "2026-11-27"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Currency",
+   "src": "FX",
+   "groups": [
+    {
+     "label": "",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "usdinr",
+       "name": "USD / INR",
+       "unit": "₹ per US$ · 27 Nov",
+       "cur": "₹",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 92.98,
+       "prev": 92.23760223388672,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/INR%3DX",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "dxy",
+       "name": "US Dollar Index",
+       "unit": "DXY · 27 Nov",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 104.014,
+       "prev": 103.66999816894531,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/DX-Y.NYB",
+       "asof": "2026-11-27"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Base Metals",
+   "src": "LME · cash settlement",
+   "groups": [
+    {
+     "label": "",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "copper",
+       "name": "Copper",
+       "unit": "US$ / t · 27 Nov",
+       "cur": "$",
+       "dp": 0,
+       "cls": "",
+       "loc": "en-US",
+       "price": 12311.5,
+       "prev": 11965.0,
+       "source": "LME via Westmetall",
+       "rank": 0,
+       "note": null,
+       "href": "https://www.westmetall.com/en/markdaten.php?action=table&field=LME_Cu_cash",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "zinc",
+       "name": "Zinc",
+       "unit": "US$ / t · 27 Nov",
+       "cur": "$",
+       "dp": 0,
+       "cls": "",
+       "loc": "en-US",
+       "price": 3677.0,
+       "prev": 3646.0,
+       "source": "LME via Westmetall",
+       "rank": 0,
+       "note": null,
+       "href": "https://www.westmetall.com/en/markdaten.php?action=table&field=LME_Zn_cash",
+       "asof": "2026-11-27"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Crypto",
+   "src": "24h change",
+   "groups": [
+    {
+     "label": "",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "btc",
+       "name": "Bitcoin",
+       "unit": "BTC · US$",
+       "cur": "$",
+       "dp": 0,
+       "cls": "",
+       "loc": "en-US",
+       "price": 59894.0,
+       "prev": 61557.54126412236,
+       "source": "CoinGecko",
+       "rank": 0,
+       "note": null,
+       "href": "https://www.coingecko.com/en/coins/bitcoin",
+       "asof": "2026-11-28"
+      },
+      {
+       "id": "eth",
+       "name": "Ethereum",
+       "unit": "ETH · US$",
+       "cur": "$",
+       "dp": 0,
+       "cls": "",
+       "loc": "en-US",
+       "price": 1662.26,
+       "prev": 1728.3466996587936,
+       "source": "CoinGecko",
+       "rank": 0,
+       "note": null,
+       "href": "https://www.coingecko.com/en/coins/ethereum",
+       "asof": "2026-11-28"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Indian Equities",
+   "src": "NSE · BSE",
+   "groups": [
+    {
+     "label": "",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "nifty",
+       "name": "NIFTY 50",
+       "unit": "NSE · 27 Nov",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-IN",
+       "price": 25607.2,
+       "prev": 25884.5,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5ENSEI",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "sensex",
+       "name": "SENSEX",
+       "unit": "BSE · 27 Nov",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-IN",
+       "price": 83339.26,
+       "prev": 84328.59375,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EBSESN",
+       "asof": "2026-11-27"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Global Equities",
+   "src": "Index levels",
+   "groups": [
+    {
+     "label": "United States",
+     "cls": "",
+     "tiles": [
+      {
+       "id": "spx",
+       "name": "S&P 500",
+       "unit": "SPX · 27 Nov",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 7297.49,
+       "prev": 7182.77978515625,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EGSPC",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "ixic",
+       "name": "Nasdaq Composite",
+       "unit": "IXIC · 27 Nov",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 24129.5,
+       "prev": 23585.80078125,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EIXIC",
+       "asof": "2026-11-27"
+      }
+     ]
+    },
+    {
+     "label": "Asia",
+     "cls": "g4",
+     "tiles": [
+      {
+       "id": "n225",
+       "name": "Nikkei 225",
+       "unit": "Japan · 27 Nov",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 58711.11,
+       "prev": 57499.16015625,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EN225",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "hsi",
+       "name": "Hang Seng",
+       "unit": "Hong Kong · 27 Nov",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 22694.77,
+       "prev": 22226.880859375,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EHSI",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "kospi",
+       "name": "KOSPI",
+       "unit": "South Korea · 27 Nov",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US",
+       "price": 4915.68,
+       "prev": 4711.2099609375,
+       "source": "Yahoo Finance",
+       "rank": 0,
+       "note": null,
+       "href": "https://finance.yahoo.com/quote/%5EKS11",
+       "asof": "2026-11-27"
+      },
+      {
+       "id": "csi300",
+       "name": "CSI 300",
+       "unit": "China",
+       "cur": "",
+       "dp": 2,
+       "cls": "",
+       "loc": "en-US"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
